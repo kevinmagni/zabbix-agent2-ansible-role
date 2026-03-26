@@ -1,0 +1,22 @@
+---
+# Pre-install: check and remove existing Zabbix repository on RPM-based systems
+
+- name: Check if Zabbix repository package is installed (rpm)
+  ansible.builtin.command: rpm -q zabbix-release
+  register: _zabbix_repo_rpm_check
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+    - zabbix-agent-check
+    - repo
+
+- name: Remove existing Zabbix repository package
+  ansible.builtin.command: rpm -e zabbix-release
+  register: _zabbix_repo_rpm_remove
+  changed_when: _zabbix_repo_rpm_remove.rc == 0
+  failed_when: _zabbix_repo_rpm_remove.rc != 0
+  when: _zabbix_repo_rpm_check.rc == 0 and not ansible_check_mode
+  tags:
+    - zabbix-agent-remove
+    - repo

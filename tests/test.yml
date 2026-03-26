@@ -1,0 +1,10 @@
+---
+- name: Test Zabbix Agent 2 role
+  hosts: all
+  gather_facts: true
+  become: true
+  vars:
+    zabbix_agent_server: "127.0.0.1"
+    zabbix_agent_hostmetadata: "test"
+  roles:
+    - role: "{{ playbook_dir }}/.."

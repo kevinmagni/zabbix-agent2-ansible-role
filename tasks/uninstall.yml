@@ -1,0 +1,74 @@
+---
+# Uninstall Zabbix Agent 2 - removes package, config, and repository
+
+- name: Stop and disable Zabbix Agent 2 service
+  ansible.builtin.service:
+    name: zabbix-agent2
+    state: stopped
+    enabled: false
+  ignore_errors: true
+  tags:
+    - zabbix-agent-uninstall
+
+- name: Remove Zabbix Agent 2 packages (APT)
+  ansible.builtin.apt:
+    name:
+      - zabbix-agent2
+      - zabbix-agent2-plugin-*
+    state: absent
+    purge: true
+  when: ansible_facts['os_family'] == "Debian"
+  tags:
+    - zabbix-agent-uninstall
+
+- name: Remove Zabbix Agent 2 packages (DNF)
+  ansible.builtin.dnf:
+    name:
+      - zabbix-agent2
+      - zabbix-agent2-plugin-*
+    state: absent
+  when: ansible_facts['os_family'] == "RedHat"
+  tags:
+    - zabbix-agent-uninstall
+
+- name: Remove Zabbix Agent 2 packages (Zypper)
+  community.general.zypper:
+    name:
+      - zabbix-agent2
+      - zabbix-agent2-plugin-*
+    state: absent
+  when: ansible_facts['os_family'] == "Suse"
+  tags:
+    - zabbix-agent-uninstall
+
+- name: Remove Zabbix repository package (APT)
+  ansible.builtin.apt:
+    name: zabbix-release
+    state: absent
+    purge: true
+  when: ansible_facts['os_family'] == "Debian"
+  tags:
+    - zabbix-agent-uninstall
+
+- name: Remove Zabbix repository package (RPM)
+  ansible.builtin.command: rpm -e zabbix-release
+  register: _zabbix_uninstall_repo
+  changed_when: _zabbix_uninstall_repo.rc == 0
+  failed_when: false
+  when: ansible_facts['os_family'] in ["RedHat", "Suse"]
+  tags:
+    - zabbix-agent-uninstall
+
+- name: Remove Zabbix Agent 2 configuration directory
+  ansible.builtin.file:
+    path: /etc/zabbix
+    state: absent
+  tags:
+    - zabbix-agent-uninstall
+
+- name: Remove Zabbix Agent 2 log directory
+  ansible.builtin.file:
+    path: /var/log/zabbix
+    state: absent
+  tags:
+    - zabbix-agent-uninstall

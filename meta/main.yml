@@ -1,0 +1,42 @@
+---
+galaxy_info:
+  author: Kevin Magni
+  description: Install and configure Zabbix Agent 2 from official repositories
+  license: Apache-2.0
+  min_ansible_version: "2.10"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - focal
+        - jammy
+        - noble
+    - name: Debian
+      versions:
+        - bullseye
+        - bookworm
+    - name: EL
+      versions:
+        - "8"
+        - "9"
+        - "10"
+    - name: Fedora
+      versions:
+        - all
+    - name: Amazon
+      versions:
+        - Candidate
+    - name: SLES
+      versions:
+        - all
+  galaxy_tags:
+    - zabbix
+    - monitoring
+    - agent
+    - agent2
+    - observability
+    - linux
+    - infrastructure
+  namespace: kevinmagni
+  role_name: zabbix_agent2
+
+dependencies: []

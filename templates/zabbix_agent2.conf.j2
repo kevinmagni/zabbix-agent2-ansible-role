@@ -1,0 +1,46 @@
+{{ ansible_managed | comment }}
+
+PidFile=/var/run/zabbix/zabbix_agent2.pid
+LogFile=/var/log/zabbix/zabbix_agent2.log
+LogFileSize={{ zabbix_agent_logfile_size }}
+AllowKey={{ zabbix_agent_allow_key }}
+{% if zabbix_agent_log_remote_commands %}
+Plugins.SystemRun.LogRemoteCommands=1
+{% endif %}
+Server={{ zabbix_agent_server }}
+ServerActive={{ zabbix_agent_server_active | default(zabbix_agent_server) }}
+ListenPort={{ zabbix_agent_listen_port }}
+HostnameItem=system.hostname
+{% if zabbix_agent_hostmetadata is defined and zabbix_agent_hostmetadata %}
+HostMetadata={{ zabbix_agent_hostmetadata }}
+{% endif %}
+Include=/etc/zabbix/zabbix_agent2.d/*.conf
+Timeout={{ zabbix_agent_timeout }}
+{% if zabbix_agent_tls_connect %}
+
+# TLS configuration
+TLSConnect={{ zabbix_agent_tls_connect }}
+{% endif %}
+{% if zabbix_agent_tls_accept %}
+TLSAccept={{ zabbix_agent_tls_accept }}
+{% endif %}
+{% if zabbix_agent_tls_psk_identity %}
+TLSPSKIdentity={{ zabbix_agent_tls_psk_identity }}
+TLSPSKFile={{ zabbix_agent_tls_psk_file }}
+{% endif %}
+{% if zabbix_agent_tls_ca_file %}
+TLSCAFile={{ zabbix_agent_tls_ca_file }}
+{% endif %}
+{% if zabbix_agent_tls_cert_file %}
+TLSCertFile={{ zabbix_agent_tls_cert_file }}
+{% endif %}
+{% if zabbix_agent_tls_key_file %}
+TLSKeyFile={{ zabbix_agent_tls_key_file }}
+{% endif %}
+{% if zabbix_agent_extra_config %}
+
+# Extra configuration
+{% for key, value in zabbix_agent_extra_config.items() %}
+{{ key }}={{ value }}
+{% endfor %}
+{% endif %}

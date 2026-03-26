@@ -1,0 +1,24 @@
+---
+# Open Zabbix Agent 2 port in the host firewall
+
+- name: Open Zabbix Agent 2 port in firewalld
+  ansible.posix.firewalld:
+    port: "{{ zabbix_agent_listen_port }}/tcp"
+    permanent: true
+    immediate: true
+    state: enabled
+  when: ansible_facts['os_family'] == "RedHat" or ansible_facts['os_family'] == "Suse"
+  tags:
+    - zabbix-agent-firewall
+    - firewall
+
+- name: Open Zabbix Agent 2 port in UFW
+  community.general.ufw:
+    rule: allow
+    port: "{{ zabbix_agent_listen_port | string }}"
+    proto: tcp
+    comment: "Zabbix Agent 2"
+  when: ansible_facts['os_family'] == "Debian"
+  tags:
+    - zabbix-agent-firewall
+    - firewall

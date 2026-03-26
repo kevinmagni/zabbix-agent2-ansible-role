@@ -1,0 +1,22 @@
+---
+# Pre-install: check and remove existing Zabbix repository on Debian-based systems
+
+- name: Check if Zabbix repository package is installed (dpkg)
+  ansible.builtin.command: dpkg -s zabbix-release
+  register: _zabbix_repo_dpkg_check
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+    - zabbix-agent-check
+    - repo
+
+- name: Remove existing Zabbix repository package
+  ansible.builtin.apt:
+    name: zabbix-release
+    state: absent
+    purge: true
+  when: _zabbix_repo_dpkg_check.rc == 0
+  tags:
+    - zabbix-agent-remove
+    - repo

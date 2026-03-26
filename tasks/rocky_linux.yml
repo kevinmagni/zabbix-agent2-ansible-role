@@ -1,0 +1,58 @@
+---
+# Tasks for installing Zabbix Agent 2 on Rocky Linux
+
+- name: Remove existing Zabbix repository if present
+  ansible.builtin.include_tasks: preinstall_repo_dnf.yml
+
+- name: Check if Zabbix repository is already installed
+  ansible.builtin.command: rpm -q zabbix-release
+  register: _zabbix_repo_present
+  changed_when: false
+  failed_when: false
+  check_mode: false
+
+- name: Install Zabbix repository on Rocky Linux
+  ansible.builtin.command: >
+    rpm -Uvh https://repo.zabbix.com/zabbix/{{ zabbix_agent_version }}/rocky/{{ ansible_distribution_major_version }}/{{ ansible_architecture }}/zabbix-release-latest-{{ zabbix_agent_version }}.el{{ ansible_distribution_major_version }}.noarch.rpm
+  when: _zabbix_repo_present.rc != 0 and not ansible_check_mode
+  tags:
+    - zabbix-agent-repo
+    - repo
+
+- name: Clean DNF cache
+  ansible.builtin.command: dnf clean all
+  changed_when: true
+  check_mode: false
+  tags:
+    - zabbix-agent-clean-cache
+    - repo
+
+- name: Install Zabbix Agent 2 and plugins
+  ansible.builtin.dnf:
+    name:
+      - zabbix-agent2
+      - zabbix-agent2-plugin-*
+    state: present
+    update_cache: true
+  tags:
+    - zabbix-agent-install
+    - install-agent
+
+- name: Configure Zabbix Agent 2
+  ansible.builtin.template:
+    src: zabbix_agent2.conf.j2
+    dest: /etc/zabbix/zabbix_agent2.conf
+    mode: "0644"
+  notify: Restart zabbix-agent2
+  tags:
+    - zabbix-agent-conf
+    - conf
+
+- name: Enable and start Zabbix Agent 2 service
+  ansible.builtin.service:
+    name: zabbix-agent2
+    enabled: true
+    state: started
+  tags:
+    - zabbix-enable
+    - service

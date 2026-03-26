@@ -1,0 +1,61 @@
+---
+# Tasks for installing Zabbix Agent 2 on Debian
+
+- name: Download Zabbix repository package
+  ansible.builtin.get_url:
+    url: "https://repo.zabbix.com/zabbix/{{ zabbix_agent_version }}/debian/pool/main/z/zabbix-release/zabbix-release_latest_{{ zabbix_agent_version }}+debian{{ ansible_distribution_major_version }}_all.deb"
+    dest: /tmp/zabbix-release.deb
+    mode: "0644"
+  tags:
+    - zabbix-agent-repo
+    - repo
+
+- name: Remove existing Zabbix repository if present
+  ansible.builtin.include_tasks: preinstall_repo_apt.yml
+
+- name: Install Zabbix repository package
+  ansible.builtin.apt:
+    deb: /tmp/zabbix-release.deb
+  tags:
+    - install-deb
+
+- name: Remove temporary repository package
+  ansible.builtin.file:
+    path: /tmp/zabbix-release.deb
+    state: absent
+
+- name: Update APT cache
+  ansible.builtin.apt:
+    update_cache: true
+  tags:
+    - update-cache
+
+- name: Install Zabbix Agent 2 and plugins
+  ansible.builtin.apt:
+    name:
+      - zabbix-agent2
+      - zabbix-agent2-plugin-*
+    state: present
+    update_cache: true
+  tags:
+    - zabbix-agent-install
+    - install-agent
+
+- name: Configure Zabbix Agent 2
+  ansible.builtin.template:
+    src: zabbix_agent2.conf.j2
+    dest: /etc/zabbix/zabbix_agent2.conf
+    mode: "0644"
+  notify: Restart zabbix-agent2
+  tags:
+    - zabbix-agent-conf
+    - conf
+
+- name: Enable and start Zabbix Agent 2 service
+  ansible.builtin.service:
+    name: zabbix-agent2
+    enabled: true
+    state: started
+  tags:
+    - zabbix-enable
+    - service

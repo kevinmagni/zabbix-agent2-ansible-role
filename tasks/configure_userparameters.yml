@@ -1,0 +1,19 @@
+---
+# Deploy custom UserParameter configuration files
+
+- name: Deploy UserParameter configuration files
+  ansible.builtin.copy:
+    content: |
+      # Managed by Ansible - do not edit
+      {% for param in item.params %}
+      {{ param }}
+      {% endfor %}
+    dest: "/etc/zabbix/zabbix_agent2.d/{{ item.name }}.conf"
+    owner: root
+    group: root
+    mode: "0644"
+  loop: "{{ zabbix_agent_userparameters }}"
+  notify: Restart zabbix-agent2
+  tags:
+    - zabbix-agent-conf
+    - userparameters

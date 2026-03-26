@@ -1,0 +1,50 @@
+---
+# Zabbix repository version to install
+zabbix_agent_version: "7.0"
+
+# Zabbix Server address (required)
+# zabbix_agent_server: "192.168.1.100"
+
+# Zabbix ServerActive address (defaults to zabbix_agent_server if not set)
+# zabbix_agent_server_active: "192.168.1.100"
+
+# Host metadata for auto-registration (optional)
+# zabbix_agent_hostmetadata: ""
+
+# Agent configuration overrides
+zabbix_agent_timeout: 30
+zabbix_agent_logfile_size: 10
+zabbix_agent_allow_key: "system.run[*]"
+zabbix_agent_log_remote_commands: true
+
+# TLS/PSK encryption (optional - all disabled by default)
+# Accepted values: "unencrypted", "psk", "cert"
+zabbix_agent_tls_connect: ""
+zabbix_agent_tls_accept: ""
+zabbix_agent_tls_psk_identity: ""
+zabbix_agent_tls_psk_value: ""
+zabbix_agent_tls_psk_file: "/etc/zabbix/zabbix_agent2.psk"
+zabbix_agent_tls_cert_file: ""
+zabbix_agent_tls_key_file: ""
+zabbix_agent_tls_ca_file: ""
+
+# Custom UserParameters (optional)
+# Each item creates a file in /etc/zabbix/zabbix_agent2.d/
+# zabbix_agent_userparameters:
+#   - name: custom_checks
+#     params:
+#       - "UserParameter=custom.cpu.usage,/usr/local/bin/cpu_check.sh"
+#       - "UserParameter=custom.mem.free,free -m | awk '/Mem/ {print $4}'"
+zabbix_agent_userparameters: []
+
+# Extra configuration options (optional)
+# Key-value pairs appended to the config file
+# zabbix_agent_extra_config:
+#   BufferSize: 1000
+#   RefreshActiveChecks: 60
+zabbix_agent_extra_config: {}
+
+# Firewall management (optional - disabled by default)
+# Automatically opens port 10050 via firewalld or ufw
+zabbix_agent_firewall_manage: false
+zabbix_agent_listen_port: 10050

@@ -1,0 +1,65 @@
+---
+# Main task file - includes OS-specific tasks based on detected distribution
+
+- name: Uninstall Zabbix Agent 2
+  ansible.builtin.include_tasks: uninstall.yml
+  when: zabbix_agent_state | default('present') == 'absent'
+  tags:
+    - zabbix-agent-uninstall
+    - never
+
+- name: Install Zabbix Agent 2 on Ubuntu
+  ansible.builtin.include_tasks: ubuntu.yml
+  when: ansible_facts['distribution'] == "Ubuntu"
+
+- name: Install Zabbix Agent 2 on Debian
+  ansible.builtin.include_tasks: debian.yml
+  when: ansible_facts['distribution'] == "Debian"
+
+- name: Install Zabbix Agent 2 on RedHat/RHEL
+  ansible.builtin.include_tasks: redhat.yml
+  when: ansible_facts['os_family'] == "RedHat" and
+        ansible_facts['distribution'] not in ["CentOS", "OracleLinux", "Rocky", "AlmaLinux", "Fedora", "Amazon"]
+
+- name: Install Zabbix Agent 2 on Fedora
+  ansible.builtin.include_tasks: fedora.yml
+  when: ansible_facts['distribution'] == "Fedora"
+
+- name: Install Zabbix Agent 2 on CentOS
+  ansible.builtin.include_tasks: centos.yml
+  when: ansible_facts['distribution'] == "CentOS"
+
+- name: Install Zabbix Agent 2 on Rocky Linux
+  ansible.builtin.include_tasks: rocky_linux.yml
+  when: ansible_facts['distribution'] == "Rocky"
+
+- name: Install Zabbix Agent 2 on Oracle Linux
+  ansible.builtin.include_tasks: oracle.yml
+  when: ansible_facts['distribution'] == "OracleLinux"
+
+- name: Install Zabbix Agent 2 on AlmaLinux
+  ansible.builtin.include_tasks: alma_linux.yml
+  when: ansible_facts['distribution'] == "AlmaLinux"
+
+- name: Install Zabbix Agent 2 on Amazon Linux
+  ansible.builtin.include_tasks: amazon_linux.yml
+  when: ansible_facts['distribution'] == "Amazon"
+
+- name: Install Zabbix Agent 2 on SUSE
+  ansible.builtin.include_tasks: suse.yml
+  when: ansible_facts['os_family'] == "Suse"
+
+# Post-install shared tasks
+
+- name: Deploy TLS PSK file
+  ansible.builtin.include_tasks: configure_tls.yml
+  when: zabbix_agent_tls_psk_identity | default('') | length > 0 and
+        zabbix_agent_tls_psk_value | default('') | length > 0
+
+- name: Deploy custom UserParameters
+  ansible.builtin.include_tasks: configure_userparameters.yml
+  when: zabbix_agent_userparameters | length > 0
+
+- name: Configure firewall for Zabbix Agent 2
+  ansible.builtin.include_tasks: configure_firewall.yml
+  when: zabbix_agent_firewall_manage | bool
