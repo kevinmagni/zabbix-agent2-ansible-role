@@ -22,7 +22,12 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install yamllint ansible-lint
+          pip install yamllint ansible-lint ansible
+
+      - name: Install required collections
+        run: |
+          ansible-galaxy collection install community.general
+          ansible-galaxy collection install ansible.posix
 
       - name: Run yamllint
         run: yamllint .

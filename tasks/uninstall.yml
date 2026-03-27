@@ -1,12 +1,32 @@
 ---
 # Uninstall Zabbix Agent 2 - removes package, config, and repository
 
-- name: Stop and disable Zabbix Agent 2 service
+- name: Stop and disable Zabbix Agent 2 service (Linux)
   ansible.builtin.service:
     name: zabbix-agent2
     state: stopped
     enabled: false
-  ignore_errors: true
+  failed_when: false
+  when: ansible_facts['os_family'] != "Windows"
+  tags:
+    - zabbix-agent-uninstall
+
+- name: Stop Zabbix Agent 2 service (Windows)
+  ansible.windows.win_service:
+    name: Zabbix Agent 2
+    state: stopped
+  failed_when: false
+  when: ansible_facts['os_family'] == "Windows"
+  tags:
+    - zabbix-agent-uninstall
+
+- name: Uninstall Zabbix Agent 2 (Windows)
+  ansible.windows.win_package:
+    product_id: "{{ zabbix_agent_win_uninstall_product_id }}"
+    state: absent
+  when:
+    - ansible_facts['os_family'] == "Windows"
+    - zabbix_agent_win_uninstall_product_id | default('') | length > 0
   tags:
     - zabbix-agent-uninstall
 
@@ -50,12 +70,17 @@
   tags:
     - zabbix-agent-uninstall
 
-- name: Remove Zabbix repository package (RPM)
-  ansible.builtin.command: rpm -e zabbix-release
-  register: _zabbix_uninstall_repo
-  changed_when: _zabbix_uninstall_repo.rc == 0
-  failed_when: false
-  when: ansible_facts['os_family'] in ["RedHat", "Suse"]
+- name: Remove Zabbix repository package (DNF)
+  ansible.builtin.dnf:
+    name: zabbix-release
+    state: absent
+  when: ansible_facts['os_family'] == "RedHat"
+
+- name: Remove Zabbix repository package (Zypper)
+  community.general.zypper:
+    name: zabbix-release
+    state: absent
+  when: ansible_facts['os_family'] == "Suse"
   tags:
     - zabbix-agent-uninstall
 

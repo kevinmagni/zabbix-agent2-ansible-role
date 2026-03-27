@@ -7,4 +7,4 @@
     zabbix_agent_server: "127.0.0.1"
     zabbix_agent_hostmetadata: "test"
   roles:
-    - role: "{{ playbook_dir }}/.."
+    - role: "{{ playbook_dir }}/.."  # noqa: role-name[path]

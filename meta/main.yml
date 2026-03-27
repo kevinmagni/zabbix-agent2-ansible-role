@@ -28,6 +28,9 @@ galaxy_info:
     - name: SLES
       versions:
         - all
+    - name: Windows
+      versions:
+        - all
   galaxy_tags:
     - zabbix
     - monitoring
@@ -36,6 +39,7 @@ galaxy_info:
     - observability
     - linux
     - infrastructure
+    - windows
   namespace: kevinmagni
   role_name: zabbix_agent2
 

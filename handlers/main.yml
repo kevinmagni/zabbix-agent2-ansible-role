@@ -4,3 +4,10 @@
     name: zabbix-agent2
     state: restarted
   become: true
+  when: ansible_facts['os_family'] != "Windows"
+
+- name: Restart zabbix-agent2 (Windows)
+  ansible.windows.win_service:
+    name: Zabbix Agent 2
+    state: restarted
+  when: ansible_facts['os_family'] == "Windows"

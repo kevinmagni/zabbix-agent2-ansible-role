@@ -1,21 +1,10 @@
 ---
-# Pre-install: check and remove existing Zabbix repository on SUSE systems
-
-- name: Check if Zabbix repository package is installed (rpm)
-  ansible.builtin.command: rpm -q zabbix-release
-  register: _zabbix_repo_rpm_check
-  changed_when: false
-  failed_when: false
-  check_mode: false
-  tags:
-    - zabbix-agent-check
-    - repo
+# Pre-install: remove existing Zabbix repository on SUSE systems
 
 - name: Remove existing Zabbix repository package
   community.general.zypper:
     name: zabbix-release
     state: absent
-  when: _zabbix_repo_rpm_check.rc == 0
   tags:
     - zabbix-agent-remove
     - repo

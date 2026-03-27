@@ -4,17 +4,16 @@
 - name: Remove existing Zabbix repository if present
   ansible.builtin.include_tasks: preinstall_repo_dnf.yml
 
-- name: Check if Zabbix repository is already installed
-  ansible.builtin.command: rpm -q zabbix-release
-  register: _zabbix_repo_present
-  changed_when: false
-  failed_when: false
-  check_mode: false
-
 - name: Install Zabbix repository on AlmaLinux
-  ansible.builtin.command: >
-    rpm -Uvh https://repo.zabbix.com/zabbix/{{ zabbix_agent_version }}/alma/{{ ansible_distribution_major_version }}/{{ ansible_architecture }}/zabbix-release-latest-{{ zabbix_agent_version }}.el{{ ansible_distribution_major_version }}.noarch.rpm
-  when: _zabbix_repo_present.rc != 0 and not ansible_check_mode
+  ansible.builtin.dnf:
+    name: >-
+      https://repo.zabbix.com/zabbix/{{ zabbix_agent_version
+      }}/alma/{{ ansible_distribution_major_version }}/{{
+      ansible_architecture }}/zabbix-release-latest-{{
+      zabbix_agent_version }}.el{{
+      ansible_distribution_major_version }}.noarch.rpm
+    state: present
+    disable_gpg_check: true
   tags:
     - zabbix-agent-repo
     - repo

@@ -1,0 +1,3 @@
+---
+skip_list:
+  - schema[meta]  # Galaxy schema doesn't include recent platform versions (e.g. Ubuntu noble, EL 10)

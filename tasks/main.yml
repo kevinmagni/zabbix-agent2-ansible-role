@@ -49,17 +49,27 @@
   ansible.builtin.include_tasks: suse.yml
   when: ansible_facts['os_family'] == "Suse"
 
-# Post-install shared tasks
+- name: Install Zabbix Agent 2 on Windows
+  ansible.builtin.include_tasks: windows.yml
+  when: ansible_facts['os_family'] == "Windows"
+
+# Post-install shared tasks (Linux only)
 
 - name: Deploy TLS PSK file
   ansible.builtin.include_tasks: configure_tls.yml
-  when: zabbix_agent_tls_psk_identity | default('') | length > 0 and
-        zabbix_agent_tls_psk_value | default('') | length > 0
+  when:
+    - ansible_facts['os_family'] != "Windows"
+    - zabbix_agent_tls_psk_identity | default('') | length > 0
+    - zabbix_agent_tls_psk_value | default('') | length > 0
 
 - name: Deploy custom UserParameters
   ansible.builtin.include_tasks: configure_userparameters.yml
-  when: zabbix_agent_userparameters | length > 0
+  when:
+    - ansible_facts['os_family'] != "Windows"
+    - zabbix_agent_userparameters | length > 0
 
 - name: Configure firewall for Zabbix Agent 2
   ansible.builtin.include_tasks: configure_firewall.yml
-  when: zabbix_agent_firewall_manage | bool
+  when:
+    - ansible_facts['os_family'] != "Windows"
+    - zabbix_agent_firewall_manage | bool
