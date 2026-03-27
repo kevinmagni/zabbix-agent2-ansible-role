@@ -38,7 +38,7 @@
     name: >-
       https://repo.zabbix.com/zabbix/{{ zabbix_agent_version
       }}/rhel/{{ zabbix_rhel_major_version }}/{{
-      ansible_architecture }}/zabbix-release-latest-{{
+      ansible_facts['architecture'] }}/zabbix-release-latest-{{
       zabbix_agent_version }}.el{{
       zabbix_rhel_major_version }}.noarch.rpm
     state: present

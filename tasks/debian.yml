@@ -14,7 +14,7 @@
       https://repo.zabbix.com/zabbix/{{ zabbix_agent_version
       }}/debian/pool/main/z/zabbix-release/zabbix-release_latest_{{
       zabbix_agent_version }}+debian{{
-      ansible_distribution_major_version }}_all.deb
+      ansible_facts['distribution_major_version'] }}_all.deb
     dest: /tmp/zabbix-release.deb
     mode: "0644"
   when: _zabbix_repo_check.rc != 0

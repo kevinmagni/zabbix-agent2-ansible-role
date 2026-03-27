@@ -5,10 +5,10 @@
   ansible.builtin.dnf:
     name: >-
       https://repo.zabbix.com/zabbix/{{ zabbix_agent_version
-      }}/rocky/{{ ansible_distribution_major_version }}/{{
-      ansible_architecture }}/zabbix-release-latest-{{
+      }}/rocky/{{ ansible_facts['distribution_major_version'] }}/{{
+      ansible_facts['architecture'] }}/zabbix-release-latest-{{
       zabbix_agent_version }}.el{{
-      ansible_distribution_major_version }}.noarch.rpm
+      ansible_facts['distribution_major_version'] }}.noarch.rpm
     state: present
     disable_gpg_check: true
   tags:

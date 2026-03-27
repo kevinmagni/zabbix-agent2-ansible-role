@@ -10,7 +10,11 @@
 
 - name: Download Zabbix repository package
   ansible.builtin.get_url:
-    url: "https://repo.zabbix.com/zabbix/{{ zabbix_agent_version }}/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_{{ zabbix_agent_version }}+ubuntu{{ ansible_distribution_version }}_all.deb"
+    url: >-
+      https://repo.zabbix.com/zabbix/{{ zabbix_agent_version
+      }}/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_{{
+      zabbix_agent_version }}+ubuntu{{
+      ansible_facts['distribution_version'] }}_all.deb
     dest: /tmp/zabbix-release.deb
     mode: "0644"
   when: _zabbix_repo_check.rc != 0
