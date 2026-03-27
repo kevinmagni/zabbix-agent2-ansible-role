@@ -1,9 +1,6 @@
 ---
 # Tasks for installing Zabbix Agent 2 on Amazon Linux
 
-- name: Remove existing Zabbix repository if present
-  ansible.builtin.include_tasks: preinstall_repo_dnf.yml
-
 - name: Install Zabbix repository on Amazon Linux
   ansible.builtin.dnf:
     name: >-
@@ -16,14 +13,6 @@
     disable_gpg_check: true
   tags:
     - zabbix-agent-repo
-    - repo
-
-- name: Clean DNF cache
-  ansible.builtin.command: dnf clean all
-  changed_when: true
-  check_mode: false
-  tags:
-    - zabbix-agent-clean-cache
     - repo
 
 - name: Install Zabbix Agent 2 and plugins

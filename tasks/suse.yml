@@ -1,8 +1,9 @@
 ---
 # Tasks for installing Zabbix Agent 2 on SUSE/SLES
 
-- name: Remove existing Zabbix repository if present
-  ansible.builtin.include_tasks: preinstall_repo_zypper.yml
+- name: Gather package facts
+  ansible.builtin.package_facts:
+    manager: rpm
 
 - name: Download Zabbix repository package
   ansible.builtin.get_url:
@@ -14,6 +15,7 @@
       ansible_distribution_major_version }}.noarch.rpm
     dest: /tmp/zabbix-release.rpm
     mode: "0644"
+  when: "'zabbix-release' not in ansible_facts.packages"
   tags:
     - zabbix-agent-repo
     - repo
@@ -23,6 +25,7 @@
     name: /tmp/zabbix-release.rpm
     state: present
     disable_gpg_check: true
+  when: "'zabbix-release' not in ansible_facts.packages"
   tags:
     - zabbix-agent-repo
     - repo
@@ -31,11 +34,13 @@
   ansible.builtin.file:
     path: /tmp/zabbix-release.rpm
     state: absent
+  when: "'zabbix-release' not in ansible_facts.packages"
 
 - name: Refresh Zabbix Official Repository
   ansible.builtin.command: zypper --gpg-auto-import-keys refresh 'Zabbix Official Repository'
   changed_when: false
   check_mode: false
+  when: "'zabbix-release' not in ansible_facts.packages"
   tags:
     - zabbix-agent-upgrade-repo
 

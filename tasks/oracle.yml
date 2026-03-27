@@ -1,9 +1,6 @@
 ---
 # Tasks for installing Zabbix Agent 2 on Oracle Linux
 
-- name: Remove existing Zabbix repository if present
-  ansible.builtin.include_tasks: preinstall_repo_dnf.yml
-
 - name: Install Zabbix repository on Oracle Linux
   ansible.builtin.dnf:
     name: >-
