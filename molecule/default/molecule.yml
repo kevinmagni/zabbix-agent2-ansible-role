@@ -25,6 +25,11 @@ provisioner:
   playbooks:
     converge: converge.yml
     verify: verify.yml
+  config_options:
+    defaults:
+      deprecation_warnings: false
+    privilege_escalation:
+      become_method: su
 
 verifier:
   name: ansible
