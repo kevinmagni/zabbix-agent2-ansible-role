@@ -1,0 +1,11 @@
+---
+# Deploy TLS PSK file on Windows
+
+- name: Deploy Zabbix Agent 2 PSK file (Windows)
+  ansible.windows.win_copy:
+    content: "{{ zabbix_agent_tls_psk_value }}"
+    dest: "{{ zabbix_agent_win_install_path }}\\zabbix_agent2.psk"
+  notify: Restart zabbix-agent2 (Windows)
+  tags:
+    - zabbix-agent-conf
+    - tls

@@ -1,6 +1,24 @@
 ---
 # Tasks for installing Zabbix Agent 2 on Windows
 
+- name: Detect existing Zabbix Agent 2 installation
+  ansible.windows.win_shell: |
+    $product = Get-CimInstance -ClassName Win32_Product | Where-Object { $_.Name -like '*Zabbix Agent 2*' }
+    if ($product) { $product.IdentifyingNumber } else { '' }
+  register: _zabbix_win_product
+  changed_when: false
+  tags:
+    - zabbix-agent-install
+
+- name: Uninstall previous Zabbix Agent 2 version
+  ansible.windows.win_package:
+    product_id: "{{ _zabbix_win_product.stdout | trim }}"
+    state: absent
+  when: _zabbix_win_product.stdout | trim | length > 0
+  tags:
+    - zabbix-agent-install
+    - uninstall
+
 - name: Create download directory
   ansible.windows.win_file:
     path: "{{ zabbix_agent_win_download_path }}"
@@ -16,15 +34,6 @@
   tags:
     - zabbix-agent-install
     - download
-
-- name: Uninstall previous Zabbix Agent 2 version
-  ansible.windows.win_package:
-    product_id: "{{ zabbix_agent_win_uninstall_product_id }}"
-    state: absent
-  when: zabbix_agent_win_uninstall_product_id | default('') | length > 0
-  tags:
-    - zabbix-agent-install
-    - uninstall
 
 - name: Install Zabbix Agent 2
   ansible.windows.win_package:

@@ -20,13 +20,23 @@
   tags:
     - zabbix-agent-uninstall
 
+- name: Detect Zabbix Agent 2 product ID (Windows)
+  ansible.windows.win_shell: |
+    $product = Get-CimInstance -ClassName Win32_Product | Where-Object { $_.Name -like '*Zabbix Agent 2*' }
+    if ($product) { $product.IdentifyingNumber } else { '' }
+  register: _zabbix_win_product
+  changed_when: false
+  when: ansible_facts['os_family'] == "Windows"
+  tags:
+    - zabbix-agent-uninstall
+
 - name: Uninstall Zabbix Agent 2 (Windows)
   ansible.windows.win_package:
-    product_id: "{{ zabbix_agent_win_uninstall_product_id }}"
+    product_id: "{{ _zabbix_win_product.stdout | trim }}"
     state: absent
   when:
     - ansible_facts['os_family'] == "Windows"
-    - zabbix_agent_win_uninstall_product_id | default('') | length > 0
+    - _zabbix_win_product.stdout | default('') | trim | length > 0
   tags:
     - zabbix-agent-uninstall
 
@@ -84,16 +94,26 @@
   tags:
     - zabbix-agent-uninstall
 
-- name: Remove Zabbix Agent 2 configuration directory
+- name: Remove Zabbix Agent 2 configuration directory (Linux)
   ansible.builtin.file:
     path: /etc/zabbix
     state: absent
+  when: ansible_facts['os_family'] != "Windows"
   tags:
     - zabbix-agent-uninstall
 
-- name: Remove Zabbix Agent 2 log directory
+- name: Remove Zabbix Agent 2 log directory (Linux)
   ansible.builtin.file:
     path: /var/log/zabbix
     state: absent
+  when: ansible_facts['os_family'] != "Windows"
+  tags:
+    - zabbix-agent-uninstall
+
+- name: Remove Zabbix Agent 2 install directory (Windows)
+  ansible.windows.win_file:
+    path: "{{ zabbix_agent_win_install_path }}"
+    state: absent
+  when: ansible_facts['os_family'] == "Windows"
   tags:
     - zabbix-agent-uninstall

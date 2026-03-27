@@ -53,7 +53,3 @@ zabbix_agent_listen_port: 10050
 zabbix_agent_win_version: "7.0.0"
 zabbix_agent_win_download_path: 'C:\Temp'
 zabbix_agent_win_install_path: 'C:\Program Files\Zabbix Agent 2'
-# Product ID of a previous version to uninstall before installing (for downgrade/upgrade)
-# Find it with: Get-WmiObject Win32_Product | Format-Table IdentifyingNumber, Name
-# zabbix_agent_win_uninstall_product_id: "{493EA3B0-30A0-4F79-889E-EB39CC6EE436}"
-zabbix_agent_win_uninstall_product_id: ""
