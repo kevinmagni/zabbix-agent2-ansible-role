@@ -15,14 +15,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
 
       - name: Install dependencies
-        run: |
-          pip install yamllint ansible-lint ansible
+        run: uv pip install yamllint ansible-lint ansible
+        env:
+          UV_SYSTEM_PYTHON: 1
 
       - name: Install required collections
         run: |
@@ -42,13 +41,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
 
       - name: Install Ansible
-        run: pip install ansible
+        run: uv pip install ansible
+        env:
+          UV_SYSTEM_PYTHON: 1
 
       - name: Install required collections
         run: |
@@ -73,14 +72,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
 
       - name: Install dependencies
-        run: |
-          pip install ansible molecule molecule-docker
+        run: uv pip install ansible molecule 'molecule-plugins[docker]'
+        env:
+          UV_SYSTEM_PYTHON: 1
 
       - name: Install required collections
         run: |
