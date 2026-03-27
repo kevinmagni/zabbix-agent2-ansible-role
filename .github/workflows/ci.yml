@@ -18,10 +18,13 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v7
 
+      - name: Set up Python environment
+        run: |
+          uv venv .venv
+          echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
+
       - name: Install dependencies
         run: uv pip install yamllint ansible-lint ansible
-        env:
-          UV_SYSTEM_PYTHON: 1
 
       - name: Install required collections
         run: |
@@ -44,10 +47,13 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v7
 
+      - name: Set up Python environment
+        run: |
+          uv venv .venv
+          echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
+
       - name: Install Ansible
         run: uv pip install ansible
-        env:
-          UV_SYSTEM_PYTHON: 1
 
       - name: Install required collections
         run: |
@@ -75,10 +81,13 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v7
 
+      - name: Set up Python environment
+        run: |
+          uv venv .venv
+          echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
+
       - name: Install dependencies
         run: uv pip install ansible molecule 'molecule-plugins[docker]'
-        env:
-          UV_SYSTEM_PYTHON: 1
 
       - name: Install required collections
         run: |
