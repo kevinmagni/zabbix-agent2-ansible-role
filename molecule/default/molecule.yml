@@ -8,32 +8,17 @@ driver:
   name: docker
 
 platforms:
-  - name: ubuntu2204
-    image: geerlingguy/docker-ubuntu2204-ansible:latest
+  - name: instance
+    image: "geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2204}-ansible:latest"
     pre_build_image: true
     privileged: true
     command: /usr/sbin/init
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:rw
     cgroupns_mode: host
-
-  - name: debian12
-    image: geerlingguy/docker-debian12-ansible:latest
-    pre_build_image: true
-    privileged: true
-    command: /usr/sbin/init
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw
-    cgroupns_mode: host
-
-  - name: rockylinux9
-    image: geerlingguy/docker-rockylinux9-ansible:latest
-    pre_build_image: true
-    privileged: true
-    command: /usr/sbin/init
-    volumes:
-      - /sys/fs/cgroup:/sys/fs/cgroup:rw
-    cgroupns_mode: host
+    tmpfs:
+      - /run
+      - /run/lock
 
 provisioner:
   name: ansible
